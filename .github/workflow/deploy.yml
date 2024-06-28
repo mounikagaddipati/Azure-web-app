@@ -1,0 +1,31 @@
+name: Deploy to Azure
+
+on:
+  push:
+    branches:
+      - main  # Set the branch to trigger deployment on
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest  # Use the latest version of Ubuntu
+
+    steps:
+      - name: Checkout code  # Checkout the repository code
+        uses: actions/checkout@v2
+
+      - name: Set up Python  # Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'  # Specify Python version here
+
+      - name: Install dependencies  # Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Install requirements from requirements.txt
+
+      - name: Deploy to Azure Web App  # Deploy to Azure Web App using Azure WebApps Deploy action
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: '<your-app-name>'  # Replace with your Azure Web App name
+          slot-name: 'production'  # Replace with your deployment slot if applicable
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Reference the Azure Web App publish profile stored as a secret
